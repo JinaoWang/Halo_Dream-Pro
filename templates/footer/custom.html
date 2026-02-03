@@ -1,0 +1,8 @@
+<div xmlns:th="https://www.thymeleaf.org"
+     class="custom"
+     th:fragment="footer (footer)"
+     th:if="${!#strings.isEmpty(footer.content)}"
+     th:with="classStr = ${footer != null and not #lists.isEmpty(footer.show_style) ? #strings.trim(#strings.listJoin(footer.show_style,' ')) : ''}"
+     th:classappend="${classStr}"
+     th:utext="${footer.content}">
+</div>

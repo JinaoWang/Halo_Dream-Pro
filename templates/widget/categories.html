@@ -1,0 +1,54 @@
+<div xmlns:th="https://www.thymeleaf.org"
+     th:fragment="widget (sidebar)"
+     th:class="'card widget ' + ${sidebar.hide}"
+     th:with="categories = ${categoryFinder.listAsTree()},
+     categoriesNames = ${theme.config.sidebar.categories_names},
+     isEmpty = ${#lists.isEmpty(categories)}">
+    <div class="card-title" th:with="defaultTile = #{widget.category.title},
+                    iconContent = ${#strings.defaultString(sidebar.icon_new?.value, 'ri-apps-line')},
+                    iconSvg = ${#strings.startsWith(iconContent, '<svg')}">
+        <i class="card-title-label"
+           th:unless="${iconSvg}"
+           th:classappend="${iconContent}"></i>
+        <th:block th:if="${iconSvg}" th:utext="${iconContent}"></th:block>
+        <span th:text="${#strings.defaultString(sidebar.title, defaultTile)}"></span>
+        <a th:if="${theme.config.sidebar.categories_more}" class="card-more" th:href="@{${site.routes.categoriesUri}}"
+           th:aria-label="#{global.more.name}" th:title="#{global.more.name}">[[#{global.more.name}]]<i
+                class="ri-arrow-right-double-line"></i></a>
+    </div>
+    <div th:if="${isEmpty}" class="card-empty">[[#{widget.category.empty.tip}]]</div>
+    <div th:unless="${isEmpty}" class="card-content">
+        <ul class="menu-list">
+            <th:block th:if="${null != categoriesNames and !#lists.isEmpty(categoriesNames)}">
+                <th:block th:replace="~{:: categoriesNoTree (${categoriesNames})}"/>
+            </th:block>
+            <th:block th:if="${null == categoriesNames || #lists.isEmpty(categoriesNames)}">
+                <th:block th:replace="~{:: categories (${categories})}"/>
+            </th:block>
+        </ul>
+    </div>
+
+    <th:block th:fragment="categories (categoriesData)">
+        <li th:each="category : ${categoriesData}">
+            <a class="level is-marginless" th:href="${category.status.permalink}"
+               th:aria-label="${category.spec.displayName}" th:title="${category.spec.displayName}">
+                <span class="level-item" th:text="${category.spec.displayName}"></span>
+                <span class="level-item tag"
+                      th:text="${category.status.postCount == null ? 0 : category.status.postCount}"></span>
+            </a>
+            <ul th:if="${not #lists.isEmpty(category.children)}">
+                <th:block th:replace="~{:: categories(${category.children})}"/>
+            </ul>
+        </li>
+    </th:block>
+    <th:block th:fragment="categoriesNoTree (categoriesNamesData)">
+        <li th:each="name : ${categoriesNamesData}" th:with="category = ${categoryFinder.getByName(name)}">
+            <a class="level is-marginless" th:href="${category.status.permalink}"
+               th:aria-label="${category.spec.displayName}" th:title="${category.spec.displayName}">
+                <span class="level-item" th:text="${category.spec.displayName}"></span>
+                <span class="level-item tag"
+                      th:text="${category.status.postCount == null ? 0 : category.status.postCount}"></span>
+            </a>
+        </li>
+    </th:block>
+</div>

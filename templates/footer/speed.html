@@ -1,0 +1,9 @@
+<span xmlns:th="https://www.thymeleaf.org"
+      th:fragment="footer (footer)"
+      th:if="${!#strings.isEmpty(theme.config.basic_info.cdn_by_logo)}"
+      th:with="classStr = ${footer != null and not #lists.isEmpty(footer.show_style) ? #strings.trim(#strings.listJoin(footer.show_style,' ')) : ''},
+               html='&lt;a class=&quot;cloud-driven&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer nofollow&quot; href=&quot;' + ${theme.config.basic_info.cdn_by_url} +
+               '&quot; aria-label=&quot;' + #{footer.cdn.name} + '&quot; title=&quot;' + #{footer.cdn.name} + '&quot;&gt;&lt;img height=&quot;auto&quot; width=&quot;auto&quot; alt=&quot;' + #{footer.cdn.name} + '&quot; src=&quot;' + ${theme.config.basic_info.cdn_by_logo} + '&quot;/&gt;&lt;/a&gt;'"
+      th:classappend="${classStr}"
+      th:utext="${#messages.msg('footer.cdn.desc', html)}">
+</span>
