@@ -1,0 +1,44 @@
+apiVersion: theme.halo.run/v1alpha1
+kind: Theme
+metadata:
+  # 主题id，唯一
+  name: Dream-Pro
+  annotations:
+    # Add supports for Halo App Store
+    # https://www.halo.run/store/apps/app-HrMpM
+    # "store.halo.run/app-id": "123456789"
+spec:
+  # 主题名称
+  displayName: Dream-Pro
+  author:
+    # 作者名称
+    name: jinaoWang
+    # 作者网址
+    website: https://github.com/JinaoWang
+  customTemplates:
+    page:
+      - name: 安全链接页面模版
+        description: 支持安全链接页面配置
+        screenshot: ""
+        file: security_link.html
+  # 主题描述
+  description: '梦之城，童话梦境'
+  # 主题logo地址
+  logo: /themes/Dream-Pro/assets/img/logo.png
+  homepage: https://www.halo.run/store/apps/app-HrMpM
+  # 主题地址
+  website: https://www.hcjike.com/docs/halo-theme-dream2.0
+  # 主题github开源地址
+  repo: https://github.com/JinaoWang/Halo_Dream-Pro.git
+  # 提交问题地址
+  issues: https://github.com/JinaoWang/Halo_Dream-Pro/issues
+  settingName: Dream-Pro-setting
+  configMapName: Dream-Pro-configMap
+  # 版本号
+  version: 1.1.1
+  # 最低支持的 Halo 版本
+  requires: ">=2.22.1"
+  # 许可
+  license:
+    - name: "MIT"
+      url: "https://github.com/hcjike/halo-theme-dream2.0-plus?tab=MIT-1-ov-file"

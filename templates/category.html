@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<th:block xmlns:th="https://www.thymeleaf.org"
+          th:insert="~{common/layout :: layout (showTitle = ${#messages.msg('page.category.browser.title', category.spec.displayName, site.title)},
+       canonical = ${category.status.permalink}, content = ~{::content}, isPost = false, hideSidebar = false)}">
+  <th:block th:fragment="content" th:with="isEmpty = ${#lists.isEmpty(posts.items)}">
+    <th:block th:if="${isEmpty}">
+      <div class="card card-content main-title">
+        <ul class="breadcrumb">
+          <li><a th:href="@{${site.routes.categoriesUri}}" th:aria-label="#{page.category.title}" th:title="#{page.category.title}"><i class="ri-apps-line"></i>[[#{page.category.title}]]</a></li>
+          <li th:text="${category.spec.displayName}"></li>
+        </ul>
+        <div class="card-empty" th:with="title=#{global.route.back.home.name},
+            linkHtml='&lt;a href=&quot;/&quot; aria-label=&quot;' + ${title} + '&quot; title=&quot;' + ${title} + '&quot;&gt;' + ${title} + '&lt;/a&gt;',
+            finalMessage=${#messages.msg('page.category.posts.empty.tip', linkHtml)}">
+          <i class="ri-inbox-2-fill"></i>
+          [(${finalMessage})]
+        </div>
+      </div>
+    </th:block>
+    <th:block th:unless="${isEmpty}">
+      <div class="card card-content main-title">
+        <ul class="breadcrumb">
+          <li><a th:href="@{${site.routes.categoriesUri}}" th:aria-label="#{page.category.title}" th:title="#{page.category.title}"><i class="ri-apps-line"></i>[[#{page.category.title}]]</a></li>
+          <li th:text="${category.spec.displayName}"></li>
+        </ul>
+      </div>
+      <th:block th:replace="~{main/article_list :: articleList (${posts.items})}"/>
+      <th:block th:replace="~{main/pagination :: pagination (${posts}, ${category.status.permalink})}"/>
+    </th:block>
+  </th:block>
+</th:block>

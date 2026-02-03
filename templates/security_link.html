@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag}" xmlns:th="https://www.thymeleaf.org"
+      th:class="${theme.config.basic_style.theme_style}"
+      th:with="urlCode = ${param.target},
+               url = ${#strings.defaultString(#uris.unescapePath(urlCode), '/')},
+               title = ${#messages.msg('page.security_link.browser.title', singlePage.spec.title, site.title)},
+               contributor = ${contributorFinder.getContributor(theme.config.basic_info.metadata_name)},
+               enableComment = false, isPost = false, canonical = ${theme.config.security_link_config.security_link_url}">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow"/>
+    <title th:with="t = ${theme.config.security_link_config.security_link_page_title},
+    t1 = ${#strings.replace(t, '{title}', site.title)}"
+    th:text="${#strings.isEmpty(t) ? (title) : t1}">
+    </title>
+    <link rel="preload stylesheet" as="style" th:href="@{/assets/css/theme.min.css(mew=${theme.spec.version})}">
+    <script th:src="@{/assets/lib/jquery@3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/utils.min.js(mew=${theme.spec.version})}"></script>
+    <script th:if="${theme.config.enhance.disable_debug}" th:src="@{/assets/js/ban-debug.min.js(mew=${theme.spec.version})}"></script>
+    <th:block th:replace="~{common/config}"/>
+    <link rel="preload stylesheet" as="style" th:href="@{/assets/lib/remixicon@4.7.0/remixicon.min.css}">
+    <link th:if="${theme.config.enhance.cursor_style != 'none'}" rel="stylesheet" th:href="@{/assets/css/cursor.min.css(mew=${theme.spec.version})}">
+    <style type="text/css">
+        html {
+            --back-img-url: url([[${#strings.defaultString(theme.config.security_link_config.security_link_site_img_background, '')}]]);
+        }
+
+        .gray-mode {
+            filter: grayscale(1) !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        html body {
+            background-image: linear-gradient(135deg, #a0a0a0 0%, #8c8c8c 100%), var(--back-img-url);
+            background-blend-mode: overlay;
+        }
+
+        html.night body {
+            background-image: linear-gradient(135deg, #364f6b 0%, #222831 100%), var(--back-img-url);
+            background-blend-mode: overlay;
+        }
+
+        html .loading {
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        html.night .loading {
+            background: rgba(57, 62, 70, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .others-end a:hover {
+            background: var(--theme);
+            box-shadow: 0 3px 8px var(--theme);
+        }
+
+        .progress-bar {
+            width: 100%;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 10px;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /*.progress {*/
+        /*    box-shadow: 0 0 10px rgba(171, 237, 216, 0.5);*/
+        /*}*/
+
+        @keyframes fadein {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            animation: fadein 0.3s ease-out;
+        }
+
+        .font-color {
+            color: #abedd8;
+        }
+
+        html.night .loading {
+            background: #393e46;
+            box-shadow: 0 4px 8px rgba(100, 100, 100, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .loading {
+                width: 75% !important;
+                max-width: 400px !important;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 35px;
+            border-radius: 24px;
+            animation: fadein 0.3s ease-out;
+            width: 400px;
+            max-width: 90%;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
+            position: relative;
+            z-index: 2;
+            isolation: isolate;
+        }
+
+        .loading::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border-radius: 26px;
+            background: linear-gradient(145deg,
+                rgba(255,255,255,0.3) 0%,
+                rgba(255,255,255,0.1) 100%);
+            z-index: -1;
+        }
+
+        html.night .loading {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(57, 62, 70, 0.85);
+        }
+
+        html.night .loading::before {
+            background: linear-gradient(145deg,
+                rgba(255,255,255,0.1) 0%,
+                rgba(255,255,255,0.05) 100%);
+        }
+
+        .content-title img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
+            display: block;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .content-title img:hover {
+            transform: scale(1.05);
+        }
+
+        .others-tip {
+            border: 1px solid var(--light-b);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size: 20px;
+            display: block;
+            margin-top: 5px;
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #F7F9FE;
+            color: var(--dark-a);
+        }
+
+        .others-end a {
+            box-shadow: 0 2px 6px var(--theme);
+            will-change: transform, opacity;
+            padding: 10px 20px;
+            border-radius: 16px;
+            border: none;
+            font-size: 16px;
+            width: 70px;
+            height: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #fefefe;
+            background: var(--theme);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+            line-height: 20px;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+
+        .content-title {
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--title);
+        }
+
+        .content-title img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
+            display: block;
+        }
+
+        .others-topic {
+            margin-bottom: 10px;
+            line-height: 1.2rem;
+            font-size: 16px;
+            letter-spacing: 1px;
+            color: var(--main);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            overflow: hidden;
+        }
+
+        .others-end {
+            display: flex;
+            justify-content: center;
+            gap: 20%;
+            margin-top: 20px;
+        }
+
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: var(--theme);
+            transition: width [[${theme.config.security_link_config.security_link_auto_jump_time}]]s linear;
+        }
+
+        .progress-end {
+            width: 100% !important;
+            transition: none !important;
+        }
+
+        .countdown-text {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--main);
+            text-align: center;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            align-items: baseline;
+        }
+
+        .countdown-text i {
+            font-size: 1.15em;
+            color: #FF9800;
+        }
+
+        #countdown {
+            font-weight: bold;
+            color: var(--theme);
+        }
+
+    </style>
+    <style th:if="${!#strings.isEmpty(theme.config.security_link_config.inline_css)}" type="text/css" th:utext="${theme.config.security_link_config.inline_css}"></style>
+</head>
+<body>
+    <div class="content">
+        <div class="loading">
+            <div class="content-title">
+                <img th:src="${#strings.isEmpty(theme.config.security_link_config.security_link_site_img) ? site.favicon : theme.config.security_link_config.security_link_site_img}" alt="favicon">
+                <span th:if="${!#strings.isEmpty(theme.config.security_link_config.security_link_site_title)}"
+                      th:with="t = ${theme.config.security_link_config.security_link_site_title},
+                           t1 = ${#strings.replace(t, '{title}', site.title)}"
+                      th:text="${t1}"></span>
+            </div>
+            <div class="others">
+                <div class="others-tip" th:utext="${#strings.defaultString(theme.config.security_link_config.security_link_tip_desc, #messages.msg('page.security_link.security_link_tip'))}">
+                </div>
+                <div class="others-topic">
+                </div>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="countdown-text" th:with="linkHtml='&lt;span id=&quot;countdown&quot;&gt;' + ${theme.config.security_link_config.security_link_auto_jump_time} + '&lt;/span&gt;',
+                    finalMessage=${#messages.msg('page.security_link.countdown_tip', linkHtml)}">
+                    <i class="ri-flashlight-fill"></i><span id="countdown_text_tip" th:utext="${finalMessage}"></span>
+                </div>
+                <div class="others-end">
+                    <a target="_self" href="/" th:aria-label="#{page.security_link.button.continue}" th:title="#{page.security_link.button.continue}">[[#{page.security_link.button.continue}]]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var effects_show = '[(${theme.config.security_link_config.custom_effects_show})]'
+        //非移动端加载特效
+        if (!Utils.isMobile() || DreamConfig.mobile_special_effects) {
+          var click = effects_show.includes('click')
+          var move = effects_show.includes('move')
+          var effects = effects_show.includes('effects')
+
+          move && DreamConfig.cursor_move && Utils.cachedScript(`${DreamConfig.theme_base}/js/cursor/move/${DreamConfig.cursor_move}.min.js?mew=${DreamConfig.theme_version}`)
+          click && DreamConfig.cursor_click && Utils.cachedScript(`${DreamConfig.theme_base}/js/cursor/click/${DreamConfig.cursor_click}.min.js?mew=${DreamConfig.theme_version}`)
+          effects && DreamConfig.effects_lantern_mode && Utils.cachedScript(`${DreamConfig.theme_base}/js/effects/lantern.min.js?mew=${DreamConfig.theme_version}`)
+          effects && DreamConfig.effects_sakura_mode && Utils.cachedScript(`${DreamConfig.theme_base}/js/effects/sakura.min.js?mew=${DreamConfig.theme_version}`)
+          effects && DreamConfig.effects_snowflake_mode && Utils.cachedScript(`${DreamConfig.theme_base}/js/effects/snowflake.min.js?mew=${DreamConfig.theme_version}`)
+          effects && DreamConfig.effects_universe_mode && Utils.cachedScript(`${DreamConfig.theme_base}/js/effects/universe.min.js?mew=${DreamConfig.theme_version}`)
+          effects && DreamConfig.effects_circle_magic_mode && Utils.cachedScript(`${DreamConfig.theme_base}/js/effects/circleMagic.min.js?mew=${DreamConfig.theme_version}`)
+          effects && DreamConfig.effects_quantum_silk_thread_mode && Utils.cachedScript(`${DreamConfig.theme_base}/js/effects/quantum.min.js?mew=${DreamConfig.theme_version}`)
+          effects && DreamConfig.effects_rain_mode && Utils.cachedScript(`${DreamConfig.theme_base}/js/effects/rain.min.js?mew=${DreamConfig.theme_version}`)
+        }
+
+        //处理跳转链接，若链接不合法则跳转到首页
+        let link_jump_desc = '[(${theme.config.security_link_config.security_link_jump_desc})]'
+        let targetUrl = '[[${url}]]'
+        //校验链接是否合法
+        try {
+          let tUrl = new URL(targetUrl)
+        } catch (e) {
+          // URL解析失败，返回首页
+          targetUrl = '/'
+        }
+        // 使用正则表达式进行全局替换
+        link_jump_desc = link_jump_desc.replace(new RegExp('{title}', 'g'), DreamConfig.site_title);
+        link_jump_desc = link_jump_desc.replace(new RegExp('{url}', 'g'), targetUrl);
+        document.querySelector('.others-topic').innerHTML = link_jump_desc
+        document.querySelector('.others-end a').setAttribute('href', targetUrl);
+
+        // 倒计时
+        let timer
+        let countdownElement
+        let countdownTextElement = document.getElementById('countdown_text_tip')
+        let countdown = [[${theme.config.security_link_config.security_link_auto_jump_time}]]
+        if (countdown > 0) {
+          const progress = document.querySelector('.progress');
+          progress.style.width = '0';
+          void progress.offsetWidth;
+          progress.style.width = '100%';
+          countdownElement = document.getElementById('countdown')
+          timer = setInterval(function () {
+            countdown--
+            countdownElement.textContent = countdown
+            if (countdown <= 0) {
+              countdownTextElement.textContent = '[[#{page.security_link.countdown_tip_jump}]]'
+              clearInterval(timer)
+              setTimeout(function() {
+                window.location.replace(targetUrl);
+              }, 30);
+            }
+          }, 1000)
+        } else {
+          document.querySelector('.progress-bar').style.display = 'none';
+          document.querySelector('.countdown-text').style.display = 'none';
+        }
+        // 继续访问，不记录历史，避免返回此页面
+        document.querySelector('.others-end a').addEventListener('click', function (e) {
+          e.preventDefault()
+          if (timer) {
+            clearInterval(timer)
+          }
+          setTimeout(function() {
+            window.location.replace(targetUrl);
+          }, 30);
+          if (countdownElement) {
+            countdownElement.textContent = 0
+          }
+          countdownTextElement.textContent = '[[#{page.security_link.countdown_tip_jump}]]'
+          document.querySelector('.progress-bar > .progress').classList.add('progress-end')
+        })
+      });
+    </script>
+    <script th:if="${!#strings.isEmpty(theme.config.security_link_config.inline_js_body)}" type="text/javascript" th:utext="${theme.config.security_link_config.inline_js_body}"></script>
+</body>
+</html>
