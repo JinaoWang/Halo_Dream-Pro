@@ -1,4 +1,4 @@
-<h1 align="center">halo-theme-dream2.0-plus</h1>
+<h1 align="center">Halo_Dream-Pro</h1>
 
 <p align="center">
 <a href="https://github.com/halo-dev/halo"><img alt="Halo version" src="https://img.shields.io/badge/halo-2.22.1%2B-brightgreen?style=flat-square" /></a>
@@ -6,6 +6,7 @@
 <a href="https://github.com/JinaoWang/Halo_Dream-Pro/blob/master/LICENSE"><img alt="license" src="https://img.shields.io/github/license/JinaoWang/Halo_Dream-Pro?style=flat-square"/></a>
 <a href="https://github.com/JinaoWang/Halo_Dream-Pro/releases"><img alt="downloads" src="https://img.shields.io/github/downloads/JinaoWang/Halo_Dream-Pro/total.svg?style=flat-square"/></a>
 <a href="https://github.com/JinaoWang/Halo_Dream-Pro/commits"><img alt="commits" src="https://img.shields.io/github/last-commit/JinaoWang/Halo_Dream-Pro.svg?style=flat-square"/></a>
+</p>
 
 本仓库为 `Halo 2.x` 主题仓库。
 
@@ -37,7 +38,6 @@
 
 **总结：认准官方渠道，保护个人财产，请勿轻信任何其他来源的信息。**
 
-
 ## 版本适配关系
 
 | 主题版本    | 适配Halo版本 | 测试用Halo版本 |
@@ -50,8 +50,8 @@
 
 ## 安装 & 更新
 
-1. 进入主题 [Release](https://github.com/JinaoWang/Halo_Dream-Pro/releases/latest) 界面，下载主题压缩包 `theme-dream2-plus-xxx.zip` 压缩包文件，`xxx` 为版本号；
-2. 进入博客后台管理 `主题->主题管理->安装主题`，选择下载的 `theme-dream2-plus-xxx.zip` 安装包进行上传；
+1. 进入主题 [Release](https://github.com/JinaoWang/Halo_Dream-Pro/releases/latest) 界面，下载主题压缩包 `Halo_Dream-Pro-xxx.zip` 压缩包文件，`xxx` 为版本号；
+2. 进入博客后台管理 `主题->主题管理->安装主题`，选择下载的 `Halo_Dream-Pro-xxx.zip` 安装包进行上传；
 3. 等待安装完成；
 4. 更新方法同上。
 
@@ -76,3 +76,10 @@
     - `npm run build` 执行主题打包操作，主题将被打包为压缩包文件存放在 `dist/` 目录下，同时 `assets` 目录下的文件也将被更新。
     - `npm run build --devel` 开发模式进行主题打包，`js` 和 `css` 不会被做压缩和混淆处理，方便排查问题。
     - `npm run release --tag=$version` 发布模式执行主题打包操作，将自动更新主题中的版本号，并使用这个版本标签重新创建  `FreeCDN` 清单文件。
+<<<<<<< HEAD
+=======
+
+## Star 历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=hcjike/halo-theme-dream2.0-plus&type=Date)](https://www.star-history.com/#hcjike/halo-theme-dream2.0-plus&Date)
+>>>>>>> 65e2010a953887aaab3afa38ca8340093d9c08d9
