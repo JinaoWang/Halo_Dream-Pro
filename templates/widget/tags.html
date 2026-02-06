@@ -1,0 +1,27 @@
+<div xmlns:th="https://www.thymeleaf.org"
+     th:fragment="widget (sidebar)"
+     th:class="'card widget tags ' + ${sidebar.hide}"
+     th:with="num = ${#strings.isEmpty(theme.config.sidebar.tags_num)? 18 : T(java.lang.Integer).parseInt(theme.config.sidebar.tags_num)},
+     tags = ${tagFinder.list(1,num)},
+     isEmpty = ${#lists.isEmpty(tags.items)},
+     enableTagsColor = ${theme.config.sidebar.enable_tag_color}">
+    <div class="card-title" th:with="defaultTitle=#{widget.tag.title},
+                    iconContent = ${#strings.defaultString(sidebar.icon_new?.value, 'ri-price-tag-3-line')},
+                    iconSvg = ${#strings.startsWith(iconContent, '<svg')}">
+        <i class="card-title-label"
+           th:unless="${iconSvg}"
+           th:classappend="${iconContent}"></i>
+        <th:block th:if="${iconSvg}" th:utext="${iconContent}"></th:block>
+        <span
+            th:text="${#strings.defaultString(sidebar.title, defaultTitle)}"></span>
+        <a th:if="${theme.config.sidebar.tags_more}" class="card-more" th:href="@{${site.routes.tagsUri}}"  th:aria-label="#{global.more.name}" th:title="#{global.more.name}">[[#{global.more.name}]]<i class="ri-arrow-right-double-line"></i></a>
+    </div>
+    <div th:if="${isEmpty}" class="card-empty">[[#{widget.tag.empty.tip}]]</div>
+    <div th:unless="${isEmpty}" class="card-content">
+        <a th:aria-label="${tag.spec.displayName}" th:title="${tag.spec.displayName}"
+           th:each="tag : ${tags.items}"
+           th:href="@{${tag.status.permalink}}"
+           th:text="${tag.spec.displayName}"
+           th:style="${(enableTagsColor && tag.spec.color != '#ffffff')? 'color: ' + tag.spec.color +'; border-color: ' + tag.spec.color +'; background: ' + tag.spec.color +'20;' : ''}"></a>
+    </div>
+</div>

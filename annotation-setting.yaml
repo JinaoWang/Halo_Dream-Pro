@@ -1,0 +1,216 @@
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: dream2-plus-annotation-setting-post
+spec:
+  targetRef:
+    group: content.halo.run
+    kind: Post
+  formSchema:
+    - $formkit: select
+      name: enable_copyright
+      label:  开启文章版权声明
+      value: ""
+      help: '当前配置将覆盖主题中的默认配置。'
+      options:
+        - value: "true"
+          label:  开启
+        - value: "false"
+          label:  关闭
+        - value: ""
+          label:  跟随默认配置
+    - $formkit: select
+      name: thumbnail_mode
+      label: 文章列表缩略图模式
+      value: "none"
+      help: '文章在列表的缩略图模式，除网格布局外，当前配置将覆盖主题中的默认配置。'
+      options:
+        - value: "default"
+          label:  默认模式
+        - value: "back"
+          label:  背景图模式
+        - value: "small"
+          label:  小图模式（左侧）
+        - value: "small-right"
+          label:  小图模式（右侧）
+        - value: "small-alter"
+          label:  小图模式（交替）
+        - value: "fold"
+          label:  折叠模式
+        - value: "none"
+          label:  跟随默认配置
+    - $formkit: text
+      name: tips
+      label:  文章提示
+      value: ""
+      placeholder: '请输入提示内容'
+      help: '在文章顶部显示一条提示。'
+    - $formkit: select
+      name: enable_share
+      label:  开启文章分享
+      value: ""
+      help: '当前配置将覆盖主题中的默认配置。'
+      options:
+        - value: "true"
+          label:  开启
+        - value: "false"
+          label:  关闭
+        - value: ""
+          label:  跟随默认配置
+    - $formkit: select
+      name: enable_donate
+      label:  开启文章打赏
+      value: ""
+      help: '当前配置将覆盖主题中的默认配置。'
+      options:
+        - value: "true"
+          label:  开启
+        - value: "false"
+          label:  关闭
+        - value: ""
+          label:  跟随默认配置
+
+---
+
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: dream2-plus-annotation-setting-single-page
+spec:
+  targetRef:
+    group: content.halo.run
+    kind: SinglePage
+  formSchema:
+    - $formkit: select
+      name: enable_copyright
+      label:  开启文章版权声明
+      value: ""
+      help: '当前配置将覆盖主题中的默认配置。'
+      options:
+        - value: "true"
+          label:  开启
+        - value: "false"
+          label:  关闭
+        - value: ""
+          label:  跟随默认配置
+    - $formkit: text
+      name: tips
+      label:  文章提示
+      value: ""
+      placeholder: '请输入提示内容'
+      help: '在文章顶部显示一条提示。'
+    - $formkit: select
+      name: enable_share
+      label:  开启文章分享
+      value: ""
+      help: '当前配置将覆盖主题中的默认配置。'
+      options:
+        - value: "true"
+          label:  开启
+        - value: "false"
+          label:  关闭
+        - value: ""
+          label:  跟随默认配置
+    - $formkit: select
+      name: enable_donate
+      label:  开启文章打赏
+      value: ""
+      help: '当前配置将覆盖主题中的默认配置。'
+      options:
+        - value: "true"
+          label:  开启
+        - value: "false"
+          label:  关闭
+        - value: ""
+          label:  跟随默认配置
+
+---
+
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: dream2-plus-annotation-setting-menu-item
+spec:
+  targetRef:
+    group: ""
+    kind: MenuItem
+  formSchema:
+    - $formkit: "iconify"
+      format: "svg"
+      value-only: true
+      name: "icon"
+      label: "图标"
+      placeholder: '选择图标(推荐大小1.2em)或在手动编辑图标中输入图标class内容'
+    - $formkit: "text"
+      name: "desc"
+      label: "描述"
+      placeholder: '请输入鼠标悬停时描述内容，默认为菜单名'
+    - $formkit: switch
+      onValue: "true"
+      offValue: "false"
+      name: "disable_pjax"
+      label: "禁用 PJAX 加载"
+      value: "false"
+      help: '开启后禁用此菜单项的pjax加载，反之跟随全局 PJAX 设置。适用于需额外资源校验的页面。'
+
+---
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: dream2-plus-annotation-setting-link-group
+spec:
+  targetRef:
+    group: core.halo.run
+    kind: LinkGroup
+  formSchema:
+    - $formkit: switch
+      onValue: "true"
+      offValue: "false"
+      name: "hide"
+      label: "是否隐藏"
+      value: "false"
+      help: '控制是否在"/links"页面中隐藏此分组。'
+
+---
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: dream2-plus-annotation-setting-link
+spec:
+  targetRef:
+    group: core.halo.run
+    kind: Link
+  formSchema:
+    - $formkit: switch
+      onValue: "true"
+      offValue: "false"
+      name: "hide"
+      label: "是否隐藏"
+      value: "false"
+      help: '控制是否在"/links"页面中隐藏此链接。'
+
+---
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: dream2-plus-annotation-setting-user
+spec:
+  targetRef:
+    group: ""
+    kind: User
+  formSchema:
+    - $formkit: switch
+      onValue: 'yes'
+      offValue: 'no'
+      name: privacy_user
+      label: 作者归档页-隐私用户
+      value: 'no'
+      help: '开启后，此用户的归档页将对外隐藏，仅登录用户本人可见。'
+    - $formkit: switch
+      onValue: 'show'
+      offValue: 'hide'
+      name: show_email
+      label: 作者归档页-显示邮件地址
+      value: 'hide'
+      help: '开启后，此用户的电子邮件地址将在作者归档页中公开显示。'
+

@@ -1,0 +1,27 @@
+<footer class="footer" xmlns:th="https://www.thymeleaf.org">
+    <div class="container">
+        <ul th:class="${theme.config.basic_info.footer_center} ? 'footer-container footer-center' : 'footer-container'">
+            <li>
+                <a class="logo-title" href="/" th:aria-label="${site.title}" th:title="${site.title}">
+                    <th:block th:if="${#strings.isEmpty(site.logo)}" th:text="${site.title}"/>
+                    <th:block th:unless="${#strings.isEmpty(site.logo)}">
+                        <img class="logo-img" th:src="${site.logo}" th:alt="${site.title}" height="28">
+                        <img class="logo-img-dark"
+                             th:src="${#strings.defaultString(theme.config.basic_info.night_logo, site.logo)}"
+                             th:alt="${site.title}" height="28">
+                    </th:block>
+                </a>
+            </li>
+            <li>
+                <div th:each="footer_line :${theme.config.basic_info.footer_layout}" class="icon-spot">
+                    <th:block th:each="footer :${footer_line.line}">
+                        <th:block th:replace="~{${'/footer/' + footer.type} :: footer ( footer = ${footer})}"></th:block>
+                    </th:block>
+                </div>
+            </li>
+            <li>
+                <halo:footer/>
+            </li>
+        </ul>
+    </div>
+</footer>

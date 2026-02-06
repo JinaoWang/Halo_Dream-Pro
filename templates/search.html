@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<th:block
+        th:insert="~{common/layout :: layout (showTitle = ${#messages.msg('page.search.browser.title', site.title)}, canonical = @{/search}, content = ~{::content}, isPost = true, hideSidebar = false)}"
+        th:with="isJournals = true, enableShare = false, baseEnableComment = false"
+        xmlns:th="https://www.thymeleaf.org">
+    <th:block th:fragment="content">
+        <div class="card card-content search-page">
+            <div class="card-tab">
+                <div>[[#{page.search.title}]]</div>
+            </div>
+            <div class="search-box">
+                <script th:inline="javascript">
+                  $(function () {
+                    var boxSearchContentInput = $('#box-search-content-input')
+                    if (boxSearchContentInput) {
+                      boxSearchContentInput.val('')
+                    }
+                    let timer
+                    var searchForm = document.getElementById('dream-search-form')
+                    var target = [[${theme.config.page_config.search.search_target}]]
+                    var searchInput = document.getElementById('halo-search-form-text-input')
+                    var searchResult = $('#dream-search-result')
+                    var searchResultEmpty = $('#dream-search-result-empty')
+                    var searchResultLimit = $('#halo-search-form-limit').val()
+                    var timeFormat = [[${theme.config.basic_info.global_time_format}]]
+                    var updateMessage = [[#{page.search.update}]]
+                    searchForm.addEventListener('submit', function (event) {
+                      event.preventDefault()
+                      findResult(searchInput.value)
+                    })
+                    document.addEventListener('keydown', function (event) {
+                      if (event.key === 'Enter') {
+                        if (searchForm.contains(document.activeElement)) {
+                          event.preventDefault()
+                          findResult(searchInput.value)
+                        }
+                      }
+                    })
+                    // 监听输入事件
+                    searchInput.addEventListener('input', function (event) {
+                      clearTimeout(timer)
+                      timer = setTimeout(function () {
+                        findResult(searchInput.value)
+                      }, 150)
+                    })
+
+                    function removeHTMLTags(html) {
+                      const doc = new DOMParser().parseFromString(html, 'text/html');
+                      function processNode(node) {
+                        let result = '';
+                        for (const child of node.childNodes) {
+                          if (child.nodeType === Node.TEXT_NODE) {
+                            result += child.textContent;
+                          } else if (child.nodeType === Node.ELEMENT_NODE) {
+                            if (child.tagName.toLowerCase() === 'mark') {
+                              result += child.outerHTML;
+                            } else {
+                              result += processNode(child);
+                            }
+                          }
+                        }
+                        return result;
+                      }
+                      return processNode(doc.body);
+                    }
+
+                    function findResult(keyword) {
+                      if (!keyword) {
+                        searchResult.empty()
+                        searchResultEmpty.show()
+                        return
+                      }
+                      Utils.request({
+                        url: '/apis/api.halo.run/v1alpha1/indices/-/search',
+                        returnRaw: true,
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        data: JSON.stringify({
+                          keyword,
+                          limit: (searchResultLimit && searchResultLimit !== '') ? searchResultLimit : 10,
+                          highlightPreTag: '<mark>',
+                          highlightPostTag: '</mark>'
+                        }),
+                        noErrorTip: true
+                      })
+                        .then((_res) => {
+                          if (_res.hits.length > 0) {
+                            searchResultEmpty.hide()
+                            searchResult.empty()
+                            for (var i = 0; i < _res.hits.length; i++) {
+                              try {
+                                var hit = _res.hits[i]
+                                var title = removeHTMLTags(hit.title)
+                                var description = hit.content ? removeHTMLTags(hit.content) : ''
+
+                                searchResult.append('<div class="widget card search-page">\n' +
+                                  '<div class="card-content main">\n' +
+                                  `<a aria-label="${title}" title="${title}" href="` + hit.permalink + '" ' + ' target="' + target + '">\n' +
+                                  '<h2 class="title">' + title + '</h2>\n' +
+                                  '</a>\n' +
+                                  (description ?
+                                    ('<div class="main-content not-toc description">\n' + description +
+                                      '\n</div>\n') : '') +
+                                  '<hr/>\n' +
+                                  '<div class="meta">\n' +
+                                  '<div></div>\n' +
+                                  '<em>' + updateMessage.replace('{0}', Utils.formatDate(hit.updateTimestamp, timeFormat)) + '</em>\n' +
+                                  '</div>\n' +
+                                  '</div>\n')
+                                // eslint-disable-next-line no-empty
+                              } catch (e) {
+                              }
+                            }
+                          } else {
+                            searchResultEmpty.show()
+                            searchResult.empty()
+                          }
+                        })
+                        .catch((err) => {
+                          searchResultEmpty.show()
+                          searchResult.empty()
+                        })
+                    }
+
+                    function getParameterByName(name, url = window.location.href) {
+                      name = name.replace(/[\[\]]/g, '\\$&')
+                      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                        results = regex.exec(url)
+                      if (!results) return null
+                      if (!results[2]) return ''
+                      return decodeURIComponent(results[2].replace(/\+/g, ' '))
+                    }
+
+                    var keyword = getParameterByName('keyword')
+                    if (keyword) {
+                      var event = new Event('input', {bubbles: true})
+                      searchInput.dispatchEvent(event)
+                    }
+                  })
+                </script>
+                <form id="dream-search-form" class="search-form-inner" method="get" action="/search" role="search">
+                    <input id="halo-search-form-limit" type="hidden" name="limit"
+                           th:value="${theme.config.page_config.search.search_limit}">
+                    <input
+                            id="halo-search-form-text-input"
+                            class="text-input"
+                            type="search"
+                            name="keyword"
+                            th:placeholder="#{page.search.input.placeholder}"
+                            th:value="${searchResult.keyword}"
+                    />
+                    <button class="search-form-btn" th:title="#{page.search.button.title}"
+                            type="submit">
+                        <i class="ri-search-line"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="dream-search-result">
+        </div>
+        <div id="dream-search-result-empty" class="widget card search-page">
+            <div class="result-empty">
+                <div class="result-empty-tips" th:utext="${theme.config.page_config.search.search_empty_tips}"></div>
+            </div>
+        </div>
+    </th:block>
+</th:block>

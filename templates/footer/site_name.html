@@ -1,0 +1,7 @@
+<a xmlns:th="https://www.thymeleaf.org"
+   th:fragment="footer (footer)" class="record"
+   th:with="classStr = ${footer != null and not #lists.isEmpty(footer.show_style) ? #strings.trim(#strings.listJoin(footer.show_style,' ')) : ''}"
+   th:classappend="${classStr}"
+   href="/" rel="noopener noreferrer nofollow" th:aria-label="${site.title}" th:title="${site.title}"
+   th:text="${site.title}">
+</a>

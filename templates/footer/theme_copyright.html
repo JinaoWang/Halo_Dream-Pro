@@ -1,0 +1,11 @@
+<span xmlns:th="https://www.thymeleaf.org"
+      th:fragment="footer (footer)"
+      th:with="classStr = ${footer != null and not #lists.isEmpty(footer.show_style) ? #strings.trim(#strings.listJoin(footer.show_style,' ')) : ''}"
+      th:classappend="${classStr}">
+    Powered by <span class="footer-copyright"><a class="powered footer-copyright-halo"
+                                                 href="https://halo.run/"
+                                                 target="_blank"
+                                                 aria-label="Halo">Halo</a> & <a
+        class="powered" href="https://github.com/hcjike/halo-theme-dream2.0-plus" target="_blank"
+        aria-label="Dream2.0 Plus">Dream2 Plus</a></span>
+</span>

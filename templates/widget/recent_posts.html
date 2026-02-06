@@ -1,0 +1,27 @@
+<div xmlns:th="https://www.thymeleaf.org"
+     th:fragment="widget (sidebar)"
+     th:class="'card widget recent-posts ' + ${sidebar.hide}"
+     th:with="num = ${#strings.isEmpty(theme.config.sidebar.recent_posts_num)? 5 : T(java.lang.Integer).parseInt(theme.config.sidebar.recent_posts_num)},
+     sortCondition = ${theme.config.sidebar.recent_posts_pinned ? {'spec.pinned,desc', 'spec.publishTime,desc', 'metadata.creationTimestamp,desc'} : {'spec.publishTime,desc', 'metadata.creationTimestamp,desc'}},
+     posts = ${postFinder.list({page: 1, size: num, sort: sortCondition})},
+     isEmpty = ${#lists.isEmpty(posts.items)}">
+    <div class="card-title" th:with="defaultTitle=#{widget.recent_posts.title},
+                    iconContent = ${#strings.defaultString(sidebar.icon_new?.value, 'ri-history-line')},
+                    iconSvg = ${#strings.startsWith(iconContent, '<svg')}">
+        <i class="card-title-label"
+           th:unless="${iconSvg}"
+           th:classappend="${iconContent}"></i>
+        <th:block th:if="${iconSvg}" th:utext="${iconContent}"></th:block>
+        <span th:text="${#strings.defaultString(sidebar.title, defaultTitle)}"></span>
+        <a th:if="${theme.config.sidebar.recent_posts_more}" class="card-more" th:href="@{${site.routes.archivesUri}}" th:aria-label="#{global.more.name}" th:title="#{global.more.name}">[[#{global.more.name}]]<i class="ri-arrow-right-double-line"></i></a>
+    </div>
+    <div th:if="${isEmpty}" class="card-empty">[[#{widget.recent_posts.empty.tip}]]</div>
+    <div th:unless="${isEmpty}" class="card-content">
+        <ul class="list">
+            <li class="item" th:each="post : ${posts.items}">
+                <a class="link" th:href="@{${post.status.permalink}}" th:aria-label="${post.spec.title}" th:title="${post.spec.title}"><span class="top" th:if="${post.spec.pinned && theme.config.sidebar.recent_posts_pinned}">[[#{global.pinned.name}]]</span>[[${post.spec.title}]]</a>
+                <i class="ri-link"></i>
+            </li>
+        </ul>
+    </div>
+</div>
