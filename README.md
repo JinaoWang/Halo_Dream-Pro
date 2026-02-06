@@ -78,8 +78,4 @@
     - `npm run release --tag=$version` 发布模式执行主题打包操作，将自动更新主题中的版本号，并使用这个版本标签重新创建  `FreeCDN` 清单文件。
 <<<<<<< HEAD
 =======
-
-## Star 历史
-
-[![Star History Chart](https://api.star-history.com/svg?repos=hcjike/halo-theme-dream2.0-plus&type=Date)](https://www.star-history.com/#hcjike/halo-theme-dream2.0-plus&Date)
->>>>>>> 65e2010a953887aaab3afa38ca8340093d9c08d9
++
