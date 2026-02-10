@@ -693,8 +693,28 @@ const commonContext = {
         
         const diffTime = targetDate - today
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-        const totalDays = 365 // 一年的总天数
-        const countdownPercent = Math.round((1 - Math.abs(diffDays) / totalDays) * 100)
+        
+        // 计算百分比：基于当前年份的进度
+        // 获取今年开始时间和目标日期在今年中的位置
+        const yearStart = new Date(currentYear, 0, 1)
+        const yearEnd = new Date(currentYear + 1, 0, 1)
+        const yearTotalDays = Math.ceil((yearEnd - yearStart) / (1000 * 60 * 60 * 24))
+        
+        // 如果目标日期在今年内，计算从年初到目标日期的进度百分比
+        let countdownPercent
+        if (targetDate.getFullYear() === currentYear) {
+          // 目标在今年：计算已过天数占全年百分比
+          const daysPassed = Math.ceil((today - yearStart) / (1000 * 60 * 60 * 24))
+          const daysToTarget = Math.ceil((targetDate - yearStart) / (1000 * 60 * 60 * 24))
+          countdownPercent = Math.round((daysPassed / daysToTarget) * 100)
+        } else {
+          // 目标在明年：计算今年已过百分比
+          const daysPassed = Math.ceil((today - yearStart) / (1000 * 60 * 60 * 24))
+          countdownPercent = Math.round((daysPassed / yearTotalDays) * 100)
+        }
+        
+        // 确保百分比在 0-100 范围内
+        countdownPercent = Math.max(0, Math.min(100, countdownPercent))
         
         // 格式化显示日期 (只显示月日)
         const displayDate = `${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`
@@ -955,13 +975,94 @@ const commonContext = {
     // 尝试自动播放
     playVideo()
   },
+  /* 初始化日历 */
+  initCalendar() {
+    try {
+      console.log('=== 开始执行日历初始化 ===')
+      console.log('calendar元素存在:', $('.calendar').length > 0)
+      console.log('aside-calendar元素存在:', $('.aside-calendar').length > 0)
+      console.log('当前时间:', new Date())
+
+      if (!$('.calendar').length) {
+        console.log('未找到calendar元素，跳过执行')
+        return
+      }
+      if (!$('.aside-calendar').length) {
+        console.log('未找到aside-calendar元素，跳过执行')
+        return
+      }
+      console.log('找到所有必要元素，开始执行日历计算')
+
+      const now = new Date()
+      const currentYear = now.getFullYear()
+      const currentMonth = now.getMonth()
+      const currentDate = now.getDate()
+
+      // 获取月份名称
+      const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+      // 获取星期名称
+      const weekNames = ['日', '一', '二', '三', '四', '五', '六']
+
+      // 获取当月第一天是星期几
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay()
+      // 获取当月的天数
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
+
+      let htmlStr = ''
+      
+      // 创建日历容器
+      htmlStr += `
+												<div class="calendar-container">
+													<div class="calendar-header">
+														<h3>${currentYear}年 ${monthNames[currentMonth]}</h3>
+													</div>
+													<div class="calendar-weekdays">`
+      
+      // 添加星期标题
+      weekNames.forEach(weekday => {
+        htmlStr += `
+														<div class="calendar-weekday">${weekday}</div>`
+      })
+      
+      htmlStr += `
+													</div>
+													<div class="calendar-days">`
+      
+      // 添加空白单元格
+      for (let i = 0; i < firstDay; i++) {
+        htmlStr += `
+														<div class="calendar-day empty"></div>`
+      }
+      
+      // 添加日期单元格
+      for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = day === currentDate
+        htmlStr += `
+														<div class="calendar-day ${isToday ? 'today' : ''}">
+															${day}
+														</div>`
+      }
+      
+      htmlStr += `
+													</div>
+												</div>`
+      
+      console.log('生成的日历HTML:', htmlStr)
+      
+      $('.aside-calendar').html(htmlStr)
+
+      console.log('=== 日历初始化完成 ===')
+    } catch (error) {
+      console.error('=== 日历初始化出错 ===', error)
+    }
+  },
 }
 
 window.commonContext = commonContext
 let timeLifeHour = -1
 
 !(function () {
-  const loads = ['initCarousel', 'sparkInput', 'websiteTime', 'playBannerVideo', 'initEffects', 'iniTaskItemDisabled', 'initTimeCount']
+  const loads = ['initCarousel', 'sparkInput', 'websiteTime', 'playBannerVideo', 'initEffects', 'iniTaskItemDisabled', 'initTimeCount', 'initCalendar']
   const omits = ['showThemeVersion']
 
   Object.keys(commonContext).forEach(

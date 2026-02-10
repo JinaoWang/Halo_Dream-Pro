@@ -1,8 +1,67 @@
 <div xmlns:th="https://www.thymeleaf.org"
      th:fragment="banner" class="banner"
-     th:classappend="${theme.config.basic_style.banner_hide_mask ? 'hide-mask' : ''}"
-     th:style="${(theme.config.basic_style.enable_banner == 'image' ? ('background-image: url(' + theme.config.basic_style.banner_image + ');') : '') +
-     (theme.config.basic_style.banner_full_screen ? ('height: ' + (theme.config.basic_info.header_fixed ? 'calc(100vh - 3.5rem)' : '100vh') + ';') : '' )}">
+     th:classappend="${theme.config.basic_style.banner_desktop.banner_hide_mask ? 'hide-mask-desktop' : ''} + ' ' + ${theme.config.basic_style.banner_mobile.banner_hide_mask ? 'hide-mask-mobile' : ''} + ' ' + ${theme.config.basic_style.banner_desktop.banner_full_screen ? 'banner-full-screen-desktop' : ''} + ' ' + ${theme.config.basic_style.banner_mobile.banner_full_screen ? 'banner-full-screen-mobile' : ''}">
+    <style th:inline="css">
+        /* 桌面端样式 */
+        @media (min-width: 769px) {
+            .banner {
+                background-image: url(/*[[${theme.config.basic_style.banner_desktop.banner_image}]]*/ '');
+            }
+            .banner:has(.banner-video-desktop) {
+                background-image: none !important;
+            }
+            .banner-full-screen-desktop {
+                height: 100vh !important;
+            }
+            /* 视频加载失败时显示背景图 */
+            .banner-video-desktop.banner-video-error {
+                display: none !important;
+            }
+            .banner-video-desktop.banner-video-error ~ .banner-fallback-desktop {
+                display: block !important;
+                width: 100%;
+                height: 100%;
+                background-image: url(/*[[${theme.config.basic_style.banner_desktop.banner_image}]]*/ '');
+                background-position: center;
+                background-size: cover;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        }
+        /* 非桌面端样式 */
+        @media (max-width: 768px) {
+            .banner {
+                background-image: url(/*[[${theme.config.basic_style.banner_mobile.banner_image}]]*/ '');
+            }
+            .banner:has(.banner-video-mobile) {
+                background-image: none !important;
+            }
+            .banner-full-screen-mobile {
+                height: 100vh !important;
+            }
+            /* 视频加载失败时显示背景图 */
+            .banner-video-mobile.banner-video-error {
+                display: none !important;
+            }
+            .banner-video-mobile.banner-video-error ~ .banner-fallback-mobile {
+                display: block !important;
+                width: 100%;
+                height: 100%;
+                background-image: url(/*[[${theme.config.basic_style.banner_mobile.banner_image}]]*/ '');
+                background-position: center;
+                background-size: cover;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        }
+        /* 默认隐藏降级图片 */
+        .banner-fallback-desktop,
+        .banner-fallback-mobile {
+            display: none;
+        }
+    </style>
     <script>
       (function () {
         if (location.pathname !== '/') {
@@ -10,12 +69,38 @@
         }
       })()
     </script>
+    <!-- 桌面端视频 -->
     <video preload="auto" loop autoplay muted playsinline
-           th:if="${theme.config.basic_style.enable_banner == 'video'}"
-           th:src="${theme.config.basic_style.banner_video}"
+           class="banner-video-desktop"
+           th:if="${theme.config.basic_style.enable_banner == 'video' && theme.config.basic_style.banner_desktop.banner_video != ''}"
+           th:src="${theme.config.basic_style.banner_desktop.banner_video}"
+           th:poster="${theme.config.basic_style.banner_desktop.banner_image}"
+           onerror="this.classList.add('banner-video-error')"
+           onstalled="this.classList.add('banner-video-error')"
            style="width: 100%;height: 100%;object-position: center;object-fit: cover;">
         [[#{common.banner.video.not_support}]]
     </video>
+    <!-- 桌面端视频降级图片 -->
+    <div class="banner-fallback-desktop" 
+         th:if="${theme.config.basic_style.enable_banner == 'video' && theme.config.basic_style.banner_desktop.banner_video != '' && theme.config.basic_style.banner_desktop.banner_image != ''}">
+    </div>
+    
+    <!-- 非桌面端视频 -->
+    <video preload="auto" loop autoplay muted playsinline
+           class="banner-video-mobile"
+           th:if="${theme.config.basic_style.enable_banner == 'video' && theme.config.basic_style.banner_mobile.banner_video != ''}"
+           th:src="${theme.config.basic_style.banner_mobile.banner_video}"
+           th:poster="${theme.config.basic_style.banner_mobile.banner_image}"
+           onerror="this.classList.add('banner-video-error')"
+           onstalled="this.classList.add('banner-video-error')"
+           style="width: 100%;height: 100%;object-position: center;object-fit: cover;">
+        [[#{common.banner.video.not_support}]]
+    </video>
+    <!-- 非桌面端视频降级图片 -->
+    <div class="banner-fallback-mobile" 
+         th:if="${theme.config.basic_style.enable_banner == 'video' && theme.config.basic_style.banner_mobile.banner_video != '' && theme.config.basic_style.banner_mobile.banner_image != ''}">
+    </div>
+    
     <div th:if="${theme.config.basic_style.enable_banner == 'video'}" style="width: 100%;height: 100%;position: absolute;"></div>
     <div class="banner-info">
         <div class="banner-info-title" th:text="${site.title}"></div>
@@ -35,8 +120,26 @@
         </g>
     </svg>
 
-    <th:block th:if="${theme.config.basic_style.banner_full_screen}">
-        <svg class="banner-slide" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" onclick="scrollToText()">
+    <!-- 桌面端全屏控制 -->
+    <th:block th:if="${theme.config.basic_style.banner_desktop.banner_full_screen}">
+        <svg class="banner-slide" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" onclick="scrollToText();">
+            <path d="M448.72390438 351.872a88.32 88.32 0 0 0 124.41599999 0L894.93190437 32l52.99200001 52.992a87.552 87.552 0 0 1 0 124.416l-372.86400001 372.864a88.32 88.32 0 0 1-124.416 0L75.85990438 209.408a88.32 88.32 0 0 1 0-124.416L128.85190438 32z m124.41599999 384L894.93190437 416l52.99200001 52.992a87.552 87.552 0 0 1 0 124.416l-372.86400001 372.864a88.32 88.32 0 0 1-124.416 0L75.85990438 593.408a88.32 88.32 0 0 1 0-124.416L128.85190438 416l319.872 319.872a88.32 88.32 0 0 0 124.41599999 0z"
+                  fill=""></path>
+        </svg>
+        <script th:inline="javascript">
+          function scrollToText() {
+            const bannerElement = document.querySelector('.banner')
+            if (bannerElement) {
+              window.scrollTo({
+                top: bannerElement.offsetHeight,
+                behavior: 'smooth'})
+            }
+          }
+        </script>
+    </th:block>
+    <!-- 非桌面端全屏控制 -->
+    <th:block th:if="${theme.config.basic_style.banner_mobile.banner_full_screen}">
+        <svg class="banner-slide" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" onclick="scrollToText();">
             <path d="M448.72390438 351.872a88.32 88.32 0 0 0 124.41599999 0L894.93190437 32l52.99200001 52.992a87.552 87.552 0 0 1 0 124.416l-372.86400001 372.864a88.32 88.32 0 0 1-124.416 0L75.85990438 209.408a88.32 88.32 0 0 1 0-124.416L128.85190438 32z m124.41599999 384L894.93190437 416l52.99200001 52.992a87.552 87.552 0 0 1 0 124.416l-372.86400001 372.864a88.32 88.32 0 0 1-124.416 0L75.85990438 593.408a88.32 88.32 0 0 1 0-124.416L128.85190438 416l319.872 319.872a88.32 88.32 0 0 0 124.41599999 0z"
                   fill=""></path>
         </svg>

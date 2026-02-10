@@ -35,14 +35,10 @@ spec:
   settingName: Dream-Pro-setting
   configMapName: Dream-Pro-configMap
   # 版本号
-  version: 1.1.1
+  version: 1.1.2
   # 最低支持的 Halo 版本
   requires: ">=2.22.1"
   # 许可
   license:
     - name: "MIT"
-<<<<<<< HEAD
       url: "https://github.com/JinaoWang/Halo_Dream-Pro?tab=MIT-1-ov-file"
-=======
-      url: "https://github.com/hcjike/halo-theme-dream2.0-plus?tab=MIT-1-ov-file"
->>>>>>> 65e2010a953887aaab3afa38ca8340093d9c08d9

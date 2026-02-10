@@ -2264,6 +2264,49 @@ button.swiper-pagination-bullet {
   }
 }
 
+/* 桌面端隐藏遮罩 */
+@media (min-width: 769px) {
+  .hide-mask-desktop {
+    &:before {
+      width: 0 !important;
+      height: 0 !important;
+    }
+  }
+}
+
+/* 非桌面端隐藏遮罩 */
+@media (max-width: 768px) {
+  .hide-mask-mobile {
+    &:before {
+      width: 0 !important;
+      height: 0 !important;
+    }
+  }
+}
+
+/* 桌面端视频显示控制 */
+@media (min-width: 769px) {
+  .banner-video-desktop {
+    display: block !important;
+  }
+  .banner-video-mobile {
+    display: none !important;
+  }
+}
+
+/* 非桌面端视频显示控制 */
+@media (max-width: 768px) {
+  .banner-video-desktop {
+    display: none !important;
+  }
+  .banner-video-mobile {
+    display: block !important;
+  }
+}
+
+/* 桌面端背景图 - 通过内联样式设置，这里不需要额外样式 */
+/* 非桌面端背景图 - 通过内联样式设置，这里不需要额外样式 */
+
 //折叠块
 
 details {
@@ -3720,6 +3763,96 @@ details[open] > summary::before {
     img {
       width: 100%;
       height: auto;
+    }
+  }
+
+  /*日历*/
+
+  &.calendar {
+
+    .card-content {
+      padding: 0;
+    }
+
+    .calendar-container {
+      width: 100%;
+      padding: 15px;
+
+      .calendar-header {
+        text-align: center;
+        margin-bottom: 15px;
+
+        h3 {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--dark-c);
+          margin: 0;
+        }
+      }
+
+      .calendar-weekdays {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+
+        .calendar-weekday {
+          flex: 1;
+          text-align: center;
+          font-size: 14px;
+          color: var(--dark-b);
+          font-weight: 500;
+        }
+      }
+
+      .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+
+        .calendar-day {
+          aspect-ratio: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          color: var(--main);
+          border-radius: 4px;
+          transition: all 0.3s ease;
+
+          &.empty {
+            opacity: 0;
+          }
+
+          &.today {
+            background-color: var(--theme);
+            color: #fff;
+            font-weight: 600;
+          }
+
+          &:hover:not(.empty) {
+            background-color: var(--bg-a);
+            transform: scale(1.05);
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      .calendar-container {
+        padding: 10px;
+
+        .calendar-header h3 {
+          font-size: 14px;
+        }
+
+        .calendar-weekday {
+          font-size: 12px;
+        }
+
+        .calendar-day {
+          font-size: 12px;
+        }
+      }
     }
   }
 }
@@ -6125,5 +6258,68 @@ text-diagram[data-type="mermaid"] {
 
   &-posts {
     margin-top: 1.4rem
+  }
+}
+
+// 日历样式
+.calendar-container {
+  width: 100%;
+  font-family: Arial, sans-serif;
+  
+  .calendar-header {
+    text-align: center;
+    margin-bottom: 10px;
+    
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+  
+  .calendar-weekdays {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    
+    .calendar-weekday {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 5px 0;
+    }
+  }
+  
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    
+    .calendar-day {
+      text-align: center;
+      padding: 8px 0;
+      font-size: 12px;
+      border-radius: 4px;
+      
+      &.empty {
+        background-color: transparent;
+      }
+      
+      &.today {
+        background-color: #ff6b6b;
+        color: white;
+        font-weight: bold;
+      }
+      
+      &:hover:not(.empty) {
+        background-color: #f0f0f0;
+        cursor: pointer;
+      }
+      
+      &.today:hover {
+        background-color: #ff8787;
+      }
+    }
   }
 }

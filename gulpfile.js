@@ -141,16 +141,26 @@ task('js', () => {
 
 task('zip', () => {
   // 生成npm版（仅包含主题必要文件）
-  const npmTarget = ['./templates/**', './*.yaml', 'README.md', 'LICENSE' , './i18n/**']
-  src(npmTarget, {base: '.'})
-    .pipe(zip('Halo_Dream-Pro-1.1.1.zip'))
+  const npmStream = src(['./templates/**', './theme.yaml', './settings.yaml', './annotation-setting.yaml', './README.md', './LICENSE' , './i18n/**'], { base: '.', cwd: __dirname })
+    .pipe(zip('Halo_Dream-Pro-1.1.2.zip'))
     .pipe(dest(distPath))
   
   // 生成源码版（包含所有文件）
-  const srcTarget = ['./src/**', './templates/**', './*.yaml', 'README.md', 'LICENSE', './i18n/**', 'package.json', 'gulpfile.js', '.eslintrc.js', '.gitignore', '.npmignore']
-  return src(srcTarget, {base: '.'})
-    .pipe(zip('Halo_Dream-Pro-源码-1.1.1.zip'))
+  const srcStream = src(['./src/**', './templates/**', './theme.yaml', './settings.yaml', './annotation-setting.yaml', './README.md', './LICENSE', './i18n/**', './package.json', './gulpfile.js', './.eslintrc.js', './.gitignore', './.npmignore'], { base: '.', cwd: __dirname })
+    .pipe(zip('Halo_Dream-Pro-源码-1.1.2.zip'))
     .pipe(dest(distPath))
+  
+  // 使用Promise.all()处理多个流
+  return Promise.all([
+    new Promise((resolve, reject) => {
+      npmStream.on('end', resolve)
+      npmStream.on('error', reject)
+    }),
+    new Promise((resolve, reject) => {
+      srcStream.on('end', resolve)
+      srcStream.on('error', reject)
+    })
+  ])
 })
 
 task('publish', (done) => {
