@@ -453,42 +453,94 @@ spec:
               value: 'image'
             - label: 关闭
               value: 'false'
-        - $formkit: attachment
-          name: banner_image
-          label: 横幅背景图
-          aspectRatio: 16/9
-          width: 160px
-          accepts:
-            - "image/*"
-          placeholder: '请输入/选择图片路径'
-          help: '输入/选择图片路径。当“博客横幅大图”设置为“视频”时，可设置视频封面/预览图。确保在微信等限制环境中，用户能看到预设图片，实现优雅降级。'
-        - $formkit: attachment
-          name: banner_video
-          label: 横幅背景视频
-          aspectRatio: 16/9
-          width: 160px
-          accepts:
-            - "video/*"
-          placeholder: '请输入/选择视频路径'
-          help: '输入/选择视频路径，视频支持mp4格式，不支持声音播放。仅在“博客横幅大图”设置为“视频”时有效。'
         - $formkit: text
           name: banner_description
           label: 横幅文字描述
           placeholder: '请输入描述内容'
-        - $formkit: switch
-          onValue: true
-          offValue: false
-          name: banner_full_screen
-          label: 横幅全屏显示
-          value: false
-          help: '开启后，横幅将全屏显示，反之则为默认显示。'
-        - $formkit: switch
-          onValue: true
-          offValue: false
-          name: banner_hide_mask
-          label: 隐藏横幅遮罩
-          value: false
-          help: '隐藏后横幅显示会更亮'
+        - $formkit: group
+          name: banner_desktop
+          label: 桌面端横幅配置
+          help: '配置桌面端（非移动设备）的横幅效果'
+          value:
+            banner_image: ''
+            banner_video: ''
+            banner_full_screen: false
+            banner_hide_mask: false
+          children:
+            - $formkit: attachment
+              name: banner_image
+              label: 桌面端横幅背景图
+              aspectRatio: 16/9
+              width: 160px
+              accepts:
+                - "image/*"
+              placeholder: '请输入/选择图片路径'
+              help: '桌面端横幅背景图，当"博客横幅大图"设置为"图片"时使用。'
+            - $formkit: attachment
+              name: banner_video
+              label: 桌面端横幅背景视频
+              aspectRatio: 16/9
+              width: 160px
+              accepts:
+                - "video/*"
+              placeholder: '请输入/选择视频路径'
+              help: '桌面端横幅背景视频，支持mp4格式，不支持声音播放。当"博客横幅大图"设置为"视频"时使用。'
+            - $formkit: switch
+              onValue: true
+              offValue: false
+              name: banner_full_screen
+              label: 桌面端横幅全屏显示
+              value: false
+              help: '开启后，桌面端横幅将全屏显示，反之则为默认显示。'
+            - $formkit: switch
+              onValue: true
+              offValue: false
+              name: banner_hide_mask
+              label: 桌面端隐藏横幅遮罩
+              value: false
+              help: '隐藏后桌面端横幅显示会更亮'
+        - $formkit: group
+          name: banner_mobile
+          label: 非桌面端横幅配置
+          help: '配置非桌面端（移动设备、平板）的横幅效果'
+          value:
+            banner_image: ''
+            banner_video: ''
+            banner_full_screen: false
+            banner_hide_mask: false
+          children:
+            - $formkit: attachment
+              name: banner_image
+              label: 非桌面端横幅背景图
+              aspectRatio: 16/9
+              width: 160px
+              accepts:
+                - "image/*"
+              placeholder: '请输入/选择图片路径'
+              help: '非桌面端横幅背景图，当"博客横幅大图"设置为"图片"时使用。'
+            - $formkit: attachment
+              name: banner_video
+              label: 非桌面端横幅背景视频
+              aspectRatio: 16/9
+              width: 160px
+              accepts:
+                - "video/*"
+              placeholder: '请输入/选择视频路径'
+              help: '非桌面端横幅背景视频，支持mp4格式，不支持声音播放。当"博客横幅大图"设置为"视频"时使用。'
+            - $formkit: switch
+              onValue: true
+              offValue: false
+              name: banner_full_screen
+              label: 非桌面端横幅全屏显示
+              value: false
+              help: '开启后，非桌面端横幅将全屏显示，反之则为默认显示。'
+            - $formkit: switch
+              onValue: true
+              offValue: false
+              name: banner_hide_mask
+              label: 非桌面端隐藏横幅遮罩
+              value: false
+              help: '隐藏后非桌面端横幅显示会更亮'
         - $formkit: select
           name: theme_style
           label: 主题风格
